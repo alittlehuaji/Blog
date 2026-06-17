@@ -1,71 +1,112 @@
-> CoreProtect 是专门为 Minecraft 插件服务器设计的记录插件，它可以记录玩家对几乎所有方块的操作（包括但不限于破坏、防止以及点击等操作）接下来这篇文章将会介绍如何构建此插件
+## 引言
+
+CoreProtect 是一款为 Minecraft 插件服务器设计的日志记录插件，能够记录玩家对大多数方块的操作，例如破坏、放置、点击等。本文将介绍如何从源码构建该插件
 
 演示环境：
 
--   `Windows 11 24H2`
-    
--   `Apache Maven 3.9.9`
-    
--   `OpenJDK 21.0.3`
-    
--   `git version 2.43.0.windows.1`
-    
+- `Arch Linux`
+- `Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)`
+- `openjdk version "26.0.1" 2026-04-21`
 
-在开始之前，确保你的系统已安装 Java 21、Maven 和 Git Bash。你可以通过以下命令来确认 Java 的版本以及你是否正确安装了 Maven：
 
-    java -version
+在开始之前，先确认环境
 
-    mvn --version
+```bash
+java -version
+```
 
-如果你还没安装 Maven，请参考 [如何在 Windows 上安装 Maven](https://phoenixnap.com/kb/install-maven-windows)。
+Maven
 
-### **1\. 克隆源代码**
+```bash
+mvn -version
+```
+
+## 步骤
+
+### 克隆源代码
 
 首先，克隆 CoreProtect 的源代码：
 
-    git clone https://github.com/PlayPro/CoreProtect.git
+```bash
+git clone https://github.com/PlayPro/CoreProtect.git
+```
 
-### **2\. 修改** `pom.xml`
+### 修改 `pom.xml`
 
-在克隆下来的项目目录中，找到 `pom.xml` 文件，并进行以下修改：
+找到 `pom.xml` 文件中的`<properties>`部分 ，修改项目分支
 
--   **第 7 行：** 设置分支为 `master`。
-    
-        <project.branch>master</project.branch>
-    
--   **第 5 行：** 设置插件的版本（保持默认也可以）。
-    
-        <version>22.4</version>
-    
+``` xml
+<project.branch>master</project.branch>
+```
 
-### **3\. 修改** `build.gradle`
+### 构建
 
-接着找到 `build.gradle` 文件，按如下修改：
+在CoreProtect项目根目录运行此命令进行构建：
 
--   **第 10 行：** 设置项目版本为 `22.4`，与 `pom.xml` 中一致。
-    
-        String projectVersion = '22.4'
-    
--   **第 11 行：** 设置分支为 `master`。
-    
-        String projectBranch = 'master'
-    
+```bash
+mvn clean install
+```
 
-### **4\. 构建项目**
-
-打开终端，切换到 CoreProtect 项目的目录，运行以下命令进行构建：
-
-    mvn clean install
-
-### **5\. 完成构建**
+### 5\. 完成构建
 
 如果一切顺利，你将在终端看到类似以下的日志输出：
 
-    [INFO]
-    [INFO] BUILD SUCCESS
-    [INFO]
-    [INFO] Total time:  13.201 s
-    [INFO] Finished at: 2024-10-06T15:20:20+08:00
-    [INFO]
+```log
 
-`BUILD SUCCESS` 表示构建成功。 你可以在 `target` 目录下找到 `CoreProtect-xx.x.jar` 文件（不要使用 `original-CoreProtect-xx.x.jar`）。将该文件放入服务器的 `plugins` 目录，重启后即可安装插件。
+    [INFO] ------------------------------------------------------------------------
+    [INFO] BUILD SUCCESS
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Total time:  35.659 s
+    [INFO] Finished at: 2026-06-17T22:46:10+08:00
+    [INFO] ------------------------------------------------------------------------
+```
+
+`BUILD SUCCESS` 表示构建成功。此时你可以在 `target` 目录下找到生成的插件文件，通常应使用非 `original-` 前缀的那个 JAR，例如 `CoreProtect-24.0.jar`
+
+## 常见问题
+
+### 类文件具有错误的版本
+
+如果运行`mvn clean install`后，遇到了类似报错：
+
+```log
+......
+[ERROR]   错误的类文件: /home/huajibenji/.m2/repository/io/papermc/paper/paper-api/26.1.2.build.9-alpha/paper-api-26.1.2.build.9-alpha.jar(/org/bukkit/block/data/type/Stairs.class)
+[ERROR]     类文件具有错误的版本 69.0, 应为 65.0
+[ERROR]     请删除该文件或确保该文件位于正确的类路径子目录中。
+[ERROR] -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+```
+
+这通常表示当前 JDK 版本无法读取依赖中的 class 文件
+
+例如，`paper-api-26.1.2.build.9-alpha` 中的部分类是用 Java 25 编译的，如果你使用 Java 21 构建，就会出现 69.0, 应为 65.0 的错误
+
+常见版本对应关系：
+
+- 65.0 = Java 21
+- 69.0 = Java 25
+- 70.0 = Java 26
+
+解决方法：
+
+- 升级构建用的 JDK 到 Java 25 或更高版本
+
+> 如果你使用的是 Arch Linux，并且安装了多个 Java。那么你可以使用`archlinux-java`命令来切换 Java
+
+修改 Java 版本后，建议用`mvn -version`命令确认 Maven 实际使用的 JDK。如：
+
+```bash
+mvn -version
+Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)
+Maven home: /usr/share/java/maven
+Java version: 26.0.1, vendor: Arch Linux, runtime: /usr/lib/jvm/java-26-openjdk
+Default locale: zh_CN, platform encoding: UTF-8
+OS name: "linux", version: "7.0.11-1-lily", arch: "amd64", family: "unix"
+```
+
