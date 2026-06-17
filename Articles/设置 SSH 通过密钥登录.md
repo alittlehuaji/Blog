@@ -55,6 +55,7 @@
    # 这里的User需要替换为你的计算机用户名
    scp "C:\Users\User\.ssh\id_ed25519.pub" root@server:~/.ssh/
    ```
+
 3. 将公钥添加到 `authorized_keys`
 
    如果你使用的是 `ssh-copy-id`，这一步可以跳过
@@ -83,6 +84,7 @@
    chmod 700 ~/.ssh
    chmod 600 ~/.ssh/authorized_keys
    ```
+
 4. 修改 `SSH`服务端配置文件
 
    为了确保可以正确使用密钥连接到服务器，这里可能需要对 `sshd_config` 进行一些修改。修改之前，记得先对此配置文件进行一次备份
