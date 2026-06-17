@@ -23,6 +23,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
    sudo apt update && sudo apt upgrade -y
    sudo apt install openvpn easy-rsa
    ```
+
 2. 配置EasyRSA
 
    1. 创建EasyRSA的工作目录
@@ -30,6 +31,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       ```bash
       mkdir /opt/easy-rsa
       ```
+
    2. 复制EasyRSA到目录
 
       ```bash
@@ -56,6 +58,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       ```bash
       ./easyrsa init-pki
       ```
+
    2. 生成 CA (证书颁发机构)
 
       ```bash
@@ -303,6 +306,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       ```bash
       ./easyrsa sign-req client server_client2
       ```
+
 5. 生成 Diffie-Hellman (DH) 参数
 
    DH 参数用于安全密钥的交换
@@ -396,22 +400,22 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       #                                               #
       # Comments are preceded with '#' or ';'         #
       #################################################
-
+      
       # OpenVPN应该监听哪个本地IP地址？
       # （可选）
       ;local a.b.c.d
-
+      
       # 指定OpenVPN Server运行的端口
       # OpenVPN应该监听哪个TCP/UDP端口？
       # 如果您想在同一台机器上运行多个OpenVPN实例，
       # 每个实例使用不同的端口号。您需要在防火墙上
       # 打开这个端口。
       port 1194
-
+      
       # 使用TCP还是UDP?
       ;proto tcp
       proto udp
-
+      
       # “dev tun”将创建一个路由IP隧道，
       # “dev tap”将创建一个以太网隧道。
       # 如果你进行以太网桥接，并且已经预先创建了一个tap0虚拟接口
@@ -425,14 +429,14 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 在这里，dev tun是最常用的模式，适合大部分的应用场景
       ;dev tap
       dev tun
-
+      
       # Windows需要网络连接面板中的TAP-Win32适配器名称
       # 如果你有多个适配器的话。
       # 你可能需要有选择地禁用
       # Windows防火墙的TAP适配器。
       # 非Windows系统通常不需要此操作。
       ;dev-node MyTap
-
+      
       # SSL/TLS根证书（ca）、证书
       # （cert）和私钥（key）。每个客户端
       # 和服务器都必须有自己的证书和
@@ -454,36 +458,36 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 您也可以使用自签名证书
       # 并使用peer-fingerprint选项。
       # 有关配置示例，请参阅openvpn-examples手册页。
-
+      
       # 这里假设所有的证书、密钥文件都是放在/etc/openvpn/server里的
       # 请根据实际情况更改目录，如果路径配置错误，可能会导致OpenVPN服
       # 务器无法正常启动
       ca /etc/openvpn/server/ca.crt
       cert /etc/openvpn/server/server.crt
       key /etc/openvpn/server/server.key  # 此文件应保密
-
+      
       # Diffie Hellman参数。
       # 使用以下命令生成你自己的参数：
       #   openssl dhparam -out dh2048.pem 2048
-
+      
       # 这里假设所有的证书、密钥文件都放在/etc/openvpn/server里的
       # 请根据实际情况更改目录，如果路径配置错误，可能会导致OpenVPN服
       # 务器无法正常启动
       dh /etc/openvpn/server/dh.pem
-
+      
       # 允许连接到非常旧的 OpenVPN 版本
       # 不支持 AEAD（OpenVPN 2.3.x 或更早版本）
       # 这会将 AES-256-CBC 添加为回退密码
       # 并保留现代密码。
       ;data-ciphers AES-256-GCM:AES-128-GCM:?CHACHA20-POLY1305:AES-256-CBC
-
+      
       # 网络拓扑
       # 应该是子网（通过IP进行寻址）
       # 除非需要支持Windows客户端v2.0.9及更低版本
       # （那时应使用net30，即每个客户端一个/30）
       # 默认设置为net30（不推荐）
       topology subnet
-
+      
       # 配置服务器模式并提供一个VPN子网
       # 供OpenVPN分配客户端地址。
       # 服务器将为自己保留10.8.0.1，
@@ -491,13 +495,13 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 每个客户端都能够通过10.8.0.1访问服务器。如果你正在
       # 进行以太网桥接，请注释掉这一行。更多信息请参阅手册页。
       server 10.8.0.0 255.255.255.0
-
+      
       # 在此文件中维护客户端 <-> 虚拟IP地址
       # 关联记录。如果OpenVPN宕机或
       # 重启，重新连接的客户端可以被分配
       # 之前从池中分配的相同虚拟IP地址。
       ifconfig-pool-persist /var/log/openvpn/ipp.txt
-
+      
       # 配置以太网桥接的服务器模式。
       # 您必须首先使用操作系统的桥接功能
       # 将TAP接口与以太网
@@ -506,7 +510,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # （起始=10.8.0.50 结束=10.8.0.100）分配
       # 给连接的客户端。除非您进行以太网桥接，否则请保留此行注释。
       ;server-bridge 10.8.0.4 255.255.255.0 10.8.0.50 10.8.0.100
-
+      
       # 配置以太网桥接的服务器模式
       # 使用DHCP代理，客户端与OpenVPN服务器端的DHCP服务器通信
       # 以接收IP地址分配和DNS服务器地址。您必须首先使用
@@ -514,7 +518,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 注意：此模式仅适用于客户端（例如Windows），其中客户端侧的TAP适配器
       # 绑定到DHCP客户端。
       ;server-bridge
-
+      
       # 向客户端推送路由以允许其
       # 到达服务器后面的其他私有子网。请记住，这些
       # 私有子网也需要知道将OpenVPN客户端
@@ -522,31 +526,31 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 路由回OpenVPN服务器。
       ;push "route 192.168.10.0 255.255.255.0"
       ;push "route 192.168.20.0 255.255.255.0"
-
+      
       # 为特定客户端分配特定IP地址，
       # 或如果连接的客户端在其后面有一个应该具有VPN访问权限的私有子网，
       # 使用子目录"ccd"来存放客户端特定的配置文件（更多信息请参见手册页）。
-
+      
       # 示例：假设具有证书Common Name"Thelonious"的客户端
       # 在其连接的机器后面还有一个小型子网，
       # 例如192.168.40.128/255.255.255.248。
       # 首先，取消注释以下这些行：
       ;client-config-dir ccd
       ;route 192.168.40.128 255.255.255.248
-
+      
       # 然后创建一个文件 ccd/Thelonious，内容为：
       #   iroute 192.168.40.128 255.255.255.248
       # 这将允许 Thelonious 的私有子网
       # 访问 VPN。此示例仅在您进行路由而不是桥接时有效，
       # 即您使用的是 "dev tun" 和 "server" 指令。
-
+      
       # 示例：假设您想给 Thelonious 分配一个固定的 VPN IP 地址 10.9.0.1。
       # 首先取消以下行的注释：
       ;client-config-dir ccd
       ;route 10.9.0.0 255.255.255.252
       # 然后添加这一行到 ccd/Thelonious：
       #   ifconfig-push 10.9.0.1 10.9.0.2
-
+      
       # 假设你想要为不同的客户端组启用不同的
       # 防火墙访问策略。有两种方法：
       # (1) 运行多个 OpenVPN 守护进程，每个组一个，
@@ -554,7 +558,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # (2) （高级）创建一个脚本，以动态地根据来自不同客户端的访问
       #     修改防火墙。有关 learn-address 脚本的更多信息，请参阅手册页。
       ;learn-address ./script
-
+      
       # 如果启用，此指令将配置
       # 所有客户端将其默认的
       # 网络网关通过VPN重定向，导致
@@ -564,7 +568,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # TUN/TAP接口进行NAT或桥接到互联网
       # 以便此功能正常工作）。
       ;push "redirect-gateway def1 bypass-dhcp"
-
+      
       # 某些特定于 Windows 的网络设置
       # 可以推送到客户端，例如 DNS
       # 或 WINS 服务器地址。注意事项：
@@ -573,14 +577,14 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # DNS 服务器。
       ;push "dhcp-option DNS 208.67.222.222"
       ;push "dhcp-option DNS 208.67.220.220"
-
+      
       # 取消此指令的注释以允许不同的
       # 客户端能够“看到”彼此。
       # 默认情况下，客户端只会看到服务器。
       # 要强制客户端只看到服务器，你还需要适当防火墙服务器的
       # TUN/TAP接口。
       ;client-to-client
-
+      
       # 取消此指令的注释，如果多个客户端
       # 可能使用相同的证书/密钥
       # 文件或Common Name连接。这仅推荐
@@ -592,14 +596,14 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 每个都有其唯一的“Common Name”，
       # 取消此行的注释。
       ;duplicate-cn
-
+      
       # keepalive指令导致类似ping的消息
       # 在链接两端来回发送，以便每一端都知道
       # 对端何时断开。
       # 每10秒ping一次，在120秒的时间段内如果没有收到
       # ping，则认为远程对等方已断开。
       keepalive 10 120
-
+      
       # 为了获得超出SSL/TLS提供的安全性的额外保障，创建一个"HMAC防火墙"
       # 以帮助阻止拒绝服务攻击和UDP端口洪泛。
       #
@@ -610,10 +614,10 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 该密钥的副本。
       # 第二个参数在服务器上应为'0'，在客户端上应为'1'。
       ;tls-auth ta.key 0 # 这个文件应当保密
-
+      
       # 我们希望允许的最大并发连接客户端数量。
       ;max-clients 100
-
+      
       # 在初始化后降低OpenVPN
       # 守护进程的权限是个好主意。
       #
@@ -621,17 +625,17 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 在创建一个专用用户之后。
       ;user openvpn
       ;group openvpn
-
+      
       # 持久化选项将尽量避免
       # 在重启时访问可能由于
       # 权限降低而无法再访问的某些资源。
       persist-key
       persist-tun
-
+      
       # 输出一个简短的状态文件，显示
       # 当前连接，每分钟截断并重写。
       status /var/log/openvpn/openvpn-status.log
-
+      
       # 默认情况下，日志消息将发送到系统日志（或
       # 在 Windows 上，如果作为服务运行，则会发送到
       # "\Program Files\OpenVPN\log" 目录）。
@@ -641,7 +645,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 一个（但不要同时使用两个）。
       ;log         /var/log/openvpn/openvpn.log
       ;log-append  /var/log/openvpn/openvpn.log
-
+      
       # 设置适当的日志级别
       # 文件详细程度。
       #
@@ -650,15 +654,16 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
       # 5 和 6 可以帮助调试连接问题
       # 9 是非常详细的
       verb 5
-
+      
       # 静默重复的消息。最多
       # 20 条相同消息类别的连续消息
       # 将输出到日志。
       ;mute 20
-
+      
       # 通知客户端服务器重启时
       # 它可以自动重新连接。
       ```
+
 7. 启动 OpenVPN 服务器
 
    ```bash
@@ -720,6 +725,7 @@ OpenVPN 是一种开源的虚拟私人网络（VPN）协议，旨在为企业和
        inet6 fe80::e02d:9ddb:61a6:26f9/64 scope link stable-privacy 
           valid_lft forever preferred_lft forever
    ```
+
 8. 开启防火墙
 
    当然，为了让其他的客户端能够正确连接到 OpenVPN 服务端，这里肯定是需要开放防火墙的
@@ -1022,6 +1028,7 @@ mute 20
    sudo apt update && sudo apt upgrade -y
    sudo apt install openvpn
    ```
+
 2. 准备所需文件
 
    在上文生成以及签署证书时，就已经签署了客户端的证书
@@ -1063,11 +1070,13 @@ mute 20
       ```bash
       mkdir -p /etc/openvpn/client
       ```
+
    2. 复制配置文件模板
 
       ```bash
       cp /usr/share/doc/openvpn/examples/sample-config-files/client.conf /etc/openvpn/client
       ```
+
    3. 复制所需的密钥以及证书
 
       ```bash
@@ -1081,6 +1090,7 @@ mute 20
       ```bash
       sudo cp /opt/easy-rsa/ta.key /etc/openvpn/client/
       ```
+
 3. 配置客户端配置文件
 
    创建配置文件
@@ -1113,76 +1123,76 @@ mute 20
    # On Windows, you might want to rename this  #
    # file so it has a .ovpn extension           #
    ##############################################
-
+   
    # 指定我们是客户端，并且我们将从服务器
    # 拉取某些配置文件指令。
    client
-
+   
    # 使用与服务器端相同的设置。
    # 在大多数系统上，除非您部分或完全禁用
    # TUN/TAP接口的防火墙，否则VPN将无法正常工作。
    ;dev tap
    dev tun
-
+   
    # Windows需要来自网络连接面板的TAP-Win32适配器名称
    # 如果你有多个适配器。在XP SP2上，
    # 你可能需要禁用TAP适配器的防火墙。
    ;dev-node MyTap
-
+   
    # 我们是连接到TCP还是
    # UDP服务器？使用与
    # 服务器相同的设置。
    ;proto tcp
    proto udp
-
+   
    # 服务器的主机名/IP和端口。
    # 你可以有多个远程条目
    # 以在服务器之间进行负载均衡。
    remote my-server-1 1194
    ;remote my-server-2 1194
-
+   
    # 从远程列表中选择一个随机主机以进行负载均衡。否则
    # 按指定的顺序尝试主机。
    ;remote-random
-
+   
    # 持续不断尝试解析OpenVPN服务器的主机名。对于并非永久
    # 连接到互联网的设备（例如笔记本电脑）非常有用。
    resolv-retry infinite
-
+   
    # 大多数客户端不需要绑定到
    # 特定的本地端口号码。
    nobind
-
+   
    # 初始化后降低权限（仅限非Windows）
    ;user openvpn
    ;group openvpn
-
+   
    # 尝试在重启后保留一些状态。
    persist-key
    persist-tun
-
+   
    # 如果您是通过HTTP代理连接到实际的OpenVPN服务器，
    # 请在此处填写代理服务器/IP和端口号。如果您需要代理
    # 服务器认证，请参阅手册页面。
    ;http-proxy-retry # 在连接失败时重试
    ;http-proxy [proxy server] [proxy port #]
-
+   
    # 无线网络经常产生大量重复的数据包。设置此标志以
    # 静默重复数据包警告。
    ;mute-replay-warnings
-
+   
    # SSL/TLS 参数。
    # 请参阅服务器配置文件以获取更多
    # 描述。最好为每个客户端使用
    # 单独的 .crt/.key 文件对。
    # 所有客户端可以使用单个 ca 文件。
-
+   
    # 这里假设所有的证书、密钥文件都是放在/etc/openvpn/client里的
    # 请根据实际情况更改目录
    ca /etc/openvpn/client/ca.crt
    cert /etc/openvpn/client/client.crt
    key /etc/openvpn/client/client.key
-
+   
    # 通过检查证书是否设置了正确的密钥用法来验证服务器证书。
    # 这是一个重要的预防措施，以防止这里讨论的潜在攻击：
    # http://openvpn.net/howto.html#mitm
@@ -1193,22 +1203,22 @@ mute 20
    #   服务器身份验证
    # EasyRSA 可以为您完成此操作。
    remote-cert-tls server
-
+   
    # 允许连接到非常旧的 OpenVPN 版本
    # 不支持 AEAD（OpenVPN 2.3.x 或更早版本）
    # 这会添加 AES-256-CBC 作为回退加密算法
    # 并保留现代加密算法。
    ;data-ciphers AES-256-GCM:AES-128-GCM:?CHACHA20-POLY1305:AES-256-CBC
-
+   
    # 如果服务器上使用了tls-auth密钥
    # 那么每个客户端也必须拥有该密钥。
    # 这里假设所有的密钥和证书都放置在/etc/openvpn/client里的
    # 请根据实际情况来
    ;tls-auth ta.key 1
-
+   
    # 设置日志文件的详细程度。
    verb 3
-
+   
    # 禁用重复消息
    ;mute 20
    ```
@@ -1316,6 +1326,6 @@ verb 3
 在开始之前，请确保你安装了 OpenVPN GUI 。如果你没有安装，那么请点击[此链接](https://openvpn.net/community-downloads/)去下载并安装
 （上述连接可能存在时效性，不排除在后续 OepnVPN 团队会更改下载界面地址的可能性。如果你点击此链接出现了 404 的情况，那么请自行去 OpenVPN 官网去寻找下载方式）
 
-OpenVPN 官网地址 https://openvpn.net
+OpenVPN 官网地址 <https://openvpn.net>
 
 ......待补充
