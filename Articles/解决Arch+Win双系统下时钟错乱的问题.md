@@ -4,10 +4,6 @@
 
 后面有空的时候研究了下，发现是两个系统对**RTC（硬件时钟）**的定义不一致导致的这个问题
 
-> Linux把主板时间改成标准UTC时间，然后根据系统设置的时区对UTC时间进行加减后显示出来。Windows直接读取主板时间显示出来，所以此时你Windows显示的时间就变成了UTC时间
-
-> 引用自[Shorin-ArchLinux-Guide Wiki](https://github.com/SHORiN-KiWATA/Shorin-ArchLinux-Guide/wiki/安装任意Linux系统的前期准备工作)
-
 ## 解决方案
 
 演示环境：
@@ -25,6 +21,6 @@
 
 ## 引用说明
 
-[Shorin-ArchLinux-Guide](https://github.com/SHORiN-KiWATA/Shorin-ArchLinux-Guide)
+<https://github.com/SHORiN-KiWATA/Shorin-ArchLinux-Guide>
 
-感谢[Shorin](https://github.com/SHORiN-KiWATA)
+<https://www.cnblogs.com/born2run/articles/16634450.html>
