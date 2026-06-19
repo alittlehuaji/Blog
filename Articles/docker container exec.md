@@ -1,4 +1,20 @@
-`docker exec` 的核心作用是在一个正在运行的容器中执行命令
+
+
+`docker container exec` 的核心作用是在一个正在运行的容器中执行命令
+
+使用方法：
+
+```bash
+docker container exec [OPTIONS] CONTAINER COMMAND [ARG...]
+```
+
+还有另外一种写法是
+
+```bash
+docker exec ...
+```
+
+本文将围绕`docker exec`这种写法来进行讲解
 
 最常用形式：
 
@@ -53,8 +69,6 @@ docker exec my-nginx nginx -v
 docker container exec my-nginx nginx -v
 ```
 
----
-
 ## 前提条件
 
 `docker exec` 只能作用于**正在运行的容器**。
@@ -103,8 +117,6 @@ docker start my-nginx
 docker exec my-nginx ls
 ```
 
----
-
 ## 最常用：进入容器 Shell
 
 ### 进入 Bash
@@ -127,8 +139,6 @@ docker exec -it my-app bash
 
 这是最常见的组合
 
----
-
 ### 进入 sh
 
 有些精简镜像没有 `bash`，例如 Alpine、BusyBox以及部分 distroless 镜像
@@ -145,8 +155,6 @@ docker exec -it CONTAINER sh
 docker exec -it alpine-container sh
 ```
 
----
-
 ## 执行单条命令
 
 如果只需要执行单条命令，不需要进入 Shell，可以直接执行命令
@@ -160,8 +168,6 @@ docker exec CONTAINER COMMAND
 ```bash
 docker exec my-nginx ls /usr/share/nginx/html
 ```
-
----
 
 ## `-i` 和 `-t` 的区别
 
@@ -181,8 +187,6 @@ docker exec -i mysql-container mysql -uroot -p123456 mydb < backup.sql
 
 这里必须用 `-i`，否则标准输入可能无法传入容器。
 
----
-
 ### `-t`：分配伪终端
 
 ```bash
@@ -190,8 +194,6 @@ docker exec -t CONTAINER COMMAND
 ```
 
 用于需要终端交互体验的命令。
-
----
 
 ### `-it`：交互式终端
 
@@ -202,8 +204,6 @@ docker exec -it CONTAINER bash
 ```
 
 适合进入容器进行交互式操作。
-
----
 
 ### 什么时候不要用 `-t`
 
@@ -235,8 +235,6 @@ the input device is not a TTY
 
 - 普通执行命令：**通常不用** `-i -t`
 
----
-
 ## 后台执行命令：`-d`
 
 `-d` 表示 detached mode，即后台执行
@@ -261,8 +259,6 @@ docker exec -d my-app sh -c "sleep 60 && echo done > /tmp/done.log"
 
 - `docker exec -d` **不会把命令输出显示在当前终端**
 - 如果需要查看结果，应将输出写入文件或通过容器日志查看
-
----
 
 ## 指定环境变量：`-e`
 
@@ -307,8 +303,6 @@ sh -c "echo $NAME"
 
 `$NAME` 可能会先被宿主机 Shell 展开，而不是在容器内展开。
 
----
-
 ## 使用环境变量文件：`--env-file`
 
 可以从文件读取环境变量。
@@ -336,8 +330,6 @@ docker exec --env-file ./exec.env my-app env
 - `--env-file` 中的变量**只对本次** `docker exec` 命令生效
 - **不会**永久修改容器环境变量
 - **不会**修改镜像或 Dockerfile
-
----
 
 ## 指定用户执行：`-u`
 
@@ -392,8 +384,6 @@ docker exec -u postgres postgres-container psql
 - 指定的用户必须在容器内存在，或者使用 UID/GID
 - 使用 root 执行命令要谨慎，可能会改变文件权限
 
----
-
 ## 指定工作目录：`-w`
 
 `-w` 或 `--workdir` 用于指定命令在容器内的工作目录。
@@ -432,8 +422,6 @@ docker exec -it -w /app my-app bash
 cd /app
 ```
 
----
-
 ## 使用 Shell 执行复杂命令
 
 如果要执行复杂命令，比如管道、重定向、变量展开、条件判断，则需要通过 Shell
@@ -452,8 +440,6 @@ docker exec my-app echo hello > /tmp/a.txt
 docker exec my-app sh -c 'echo hello > /tmp/a.txt'
 ```
 
----
-
 ### 执行多条命令
 
 ```bash
@@ -470,15 +456,11 @@ npm run build
 '
 ```
 
----
-
 ### 使用管道
 
 ```bash
 docker exec my-app sh -c 'ps aux | grep nginx'
 ```
-
----
 
 ### 使用重定向
 
@@ -492,15 +474,11 @@ docker exec my-app sh -c 'echo "hello" > /tmp/hello.txt'
 docker exec my-app sh -c 'echo "world" >> /tmp/hello.txt'
 ```
 
----
-
 ### 条件执行
 
 ```bash
 docker exec my-app sh -c 'test -f /app/config.yml && echo exists || echo missing'
 ```
-
----
 
 ## 使用特权模式：`--privileged`
 
@@ -531,8 +509,6 @@ docker exec --privileged -it my-container sh
 
 通常只有在排查网络、内核能力、设备访问等问题时才考虑使用
 
----
-
 ## 修改 detach 快捷键：`--detach-keys`
 
 当使用交互式终端时，默认可以通过快捷键脱离容器终端
@@ -556,8 +532,6 @@ docker exec -it --detach-keys="ctrl-x" my-app bash
 - 脱离不是停止容器
 - 该操作只是退出当前终端连接
 
----
-
 ## 常见实际场景
 
 ### 进入正在运行的容器
@@ -572,8 +546,6 @@ docker exec -it my-app bash
 docker exec -it my-app sh
 ```
 
----
-
 ### 查看容器内文件
 
 ```bash
@@ -584,15 +556,11 @@ docker exec my-app ls -lah /app
 docker exec my-app cat /app/config.yml
 ```
 
----
-
 ### 查看容器内进程
 
 ```bash
 docker exec my-app ps aux
 ```
-
----
 
 ### 查看端口监听
 
@@ -607,8 +575,6 @@ docker exec my-app ss -tunlp
 ```
 
 有些精简镜像可能没有这些命令
-
----
 
 ### 测试容器内网络
 
@@ -629,8 +595,6 @@ docker exec my-app wget -qO- http://localhost:8080
 - `localhost` 指的是容器内部自身
 - 不是宿主机
 - 不是其他容器
-
----
 
 ### 在容器内执行项目命令
 
@@ -658,8 +622,6 @@ Java：
 ```bash
 docker exec my-java java -version
 ```
-
----
 
 ### 执行数据库命令
 
@@ -711,8 +673,6 @@ docker exec -it redis-container redis-cli
 docker exec redis-container redis-cli ping
 ```
 
----
-
 ### 查看容器内环境变量
 
 ```bash
@@ -724,8 +684,6 @@ docker exec my-app env
 ```bash
 docker exec my-app sh -c 'echo $PATH'
 ```
-
----
 
 ### 在容器中创建文件
 
@@ -745,39 +703,6 @@ docker exec my-app sh -c 'echo world >> /tmp/hello.txt'
 docker exec my-app cat /tmp/hello.txt
 ```
 
----
-
-### 在容器中安装临时调试工具
-
-Debian/Ubuntu 系镜像：
-
-```bash
-docker exec -it -u root my-app bash
-apt update
-apt install -y curl vim net-tools iproute2 procps
-```
-
-Alpine 镜像：
-
-```bash
-docker exec -it -u root my-app sh
-apk add --no-cache curl vim busybox-extras iproute2 procps
-```
-
-也可以直接执行：
-
-```bash
-docker exec -u root my-app sh -c 'apk add --no-cache curl'
-```
-
-注意：
-
-- 容器内安装工具通常是**临时行为**
-- 容器删除后这些修改会丢失
-- 正式环境建议写入到 `Dockerfile`
-
----
-
 ## `docker exec` 与 `docker run` 的区别
 
 ### docker exec
@@ -794,8 +719,6 @@ docker exec -it my-app bash
 - 不会创建新容器
 - 适合调试、排查、临时执行命令
 
----
-
 ### docker run
 
 基于镜像创建并启动新容器：
@@ -810,16 +733,12 @@ docker run -it ubuntu bash
 - 可以从镜像启动
 - 适合启动服务或创建临时容器
 
----
-
 对比：
 
 ```text
 docker exec：进入或操作一个已经存在且运行中的容器
 docker run ：基于镜像创建一个新的容器
 ```
-
----
 
 ## `docker exec` 与 `docker attach` 的区别
 
@@ -836,8 +755,6 @@ docker exec -it my-app bash
 - 在容器内新开一个命令进程
 - 常用于进入容器调试
 - 退出 Shell 不会影响容器主进程
-
----
 
 ### docker attach
 
@@ -865,8 +782,6 @@ docker exec -it CONTAINER bash
 docker attach CONTAINER
 ```
 
----
-
 ## 常见错误与解决方法
 
 ### 容器没有运行
@@ -885,8 +800,6 @@ docker start CONTAINER
 docker exec -it CONTAINER sh
 ```
 
----
-
 ### 容器里没有 bash
 
 错误：
@@ -900,8 +813,6 @@ exec: "bash": executable file not found in $PATH
 ```bash
 docker exec -it CONTAINER sh
 ```
-
----
 
 ### 命令不存在
 
@@ -927,8 +838,6 @@ Alpine：
 docker exec -u root CONTAINER sh -c 'apk add --no-cache curl'
 ```
 
----
-
 ### 输入设备不是 TTY
 
 错误：
@@ -950,8 +859,6 @@ docker exec -it mysql-container mysql -uroot -p123456 mydb < backup.sql
 ```bash
 docker exec -i mysql-container mysql -uroot -p123456 mydb < backup.sql
 ```
-
----
 
 ### 权限不足
 
@@ -975,8 +882,6 @@ docker exec -u root CONTAINER chmod +x /path/script.sh
 
 注意不要随意改变生产容器中的文件权限
 
----
-
 ### 变量没有正确展开
 
 错误示例：
@@ -993,9 +898,7 @@ docker exec my-app sh -c "echo $HOME"
 docker exec my-app sh -c 'echo $HOME'
 ```
 
----
-
-## 常用命令速查
+## 常用命令
 
 进入容器：
 
@@ -1058,9 +961,7 @@ docker exec -i mysql-container mysql -uroot -p123456 mydb < backup.sql
 docker exec mysql-container mysqldump -uroot -p123456 mydb > backup.sql
 ```
 
----
-
-## 推荐实践
+## 实践
 
 ### 日常进入容器优先使用
 
@@ -1073,8 +974,6 @@ docker exec -it CONTAINER sh
 ```bash
 docker exec -it CONTAINER bash
 ```
-
----
 
 ### 自动化脚本中尽量不用 `-t`
 
@@ -1096,8 +995,6 @@ docker exec -i CONTAINER command
 docker exec -it CONTAINER command
 ```
 
----
-
 ### 复杂命令使用 `sh -c`
 
 推荐：
@@ -1105,8 +1002,6 @@ docker exec -it CONTAINER command
 ```bash
 docker exec CONTAINER sh -c 'cd /app && command1 && command2'
 ```
-
----
 
 ### 注意容器内外路径区别
 
@@ -1131,15 +1026,3 @@ docker exec my-app ls /app
 ```
 
 这里 `/app` 是容器内的 `/app`
-
----
-
-### 不要把临时调试修改当成永久修改
-
-通过 `docker exec` 在容器中做的修改：
-
-```bash
-docker exec my-app sh -c 'apt install -y vim'
-```
-
-该操作只存在于当前容器文件系统中。如果容器删除并重新创建的话修改会丢失
