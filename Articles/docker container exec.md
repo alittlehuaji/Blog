@@ -1,5 +1,3 @@
-
-
 `docker container exec` 的核心作用是在一个正在运行的容器中执行命令
 
 使用方法：
@@ -1026,3 +1024,11 @@ docker exec my-app ls /app
 ```
 
 这里 `/app` 是容器内的 `/app`
+
+----
+
+## 参考说明
+
+<https://docs.docker.com/reference/cli/docker/container/exec/>
+
+本文使用了生成式人工智能来协助整理
