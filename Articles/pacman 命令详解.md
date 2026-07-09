@@ -220,55 +220,6 @@ sudo pacman -Syu --ignore linux
 | `-c`, `--clean`     | 清理软件包缓存。`-Sc` 删除旧版本缓存，保留当前已安装版本；`-Scc` 清除所有缓存，比较激进。 | `sudo pacman -Sc`；彻底清理：`sudo pacman -Scc`     |
 | `--cachedir <目录>` | 指定额外或替代的软件包缓存目录。适合临时用别的磁盘存包。     | `sudo pacman -Syu --cachedir /mnt/cache/pacman/pkg` |
 
-##### 路径、根目录、配置文件相关
-
-| 选项                    | 作用                                                         | 例子                                              |
-| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| `-r`, `--root <路径>`   | 指定另一个安装根目录。常用于给挂载在 `/mnt` 的系统安装包     | `sudo pacman -r /mnt -S bash`                     |
-| `-b`, `--dbpath <路径>` | 指定 pacman 数据库位置，默认通常是 `/var/lib/pacman`。高级用法，一般不需要改 | `sudo pacman -Syu --dbpath /mnt/var/lib/pacman`   |
-| `--config <路径>`       | 使用指定的 pacman 配置文件，而不是默认 `/etc/pacman.conf`    | `sudo pacman --config /tmp/pacman.conf -Syu`      |
-| `--gpgdir <路径>`       | 指定 pacman 使用的 Gnu PG 密钥目录，默认一般是 `/etc/pacman.d/gnupg` | `sudo pacman -Syu --gpgdir /etc/pacman.d/gnupg`   |
-| `--hookdir <目录>`      | 指定 pacman hook 钩子目录。可以多次使用。高级用法，适合测试或自定义 hook | `sudo pacman -Syu --hookdir /etc/pacman.d/hooks`  |
-| `--logfile <路径>`      | 指定 pacman 日志文件路径，默认通常是 `/var/log/pacman.log`   | `sudo pacman -Syu --logfile /tmp/pacman-test.log` |
-| `--sysroot <路径>`      | 指定一个替代根文件系统路径，让 pacman 将该目录视为系统根目录`/`来进行操作 | `sudo pacman --sysroot /mnt -Syu`                 |
-
-##### 输出格式
-
-| 选项              | 作用                                                   | 例子                  |
-| ----------------- | ------------------------------------------------------ | --------------------- |
-| `-v`, `--verbose` | 显示更详细的信息，例如仓库、下载、依赖解析等更多内容 | `sudo pacman -Syu -v` |
-| `--color <when>`          | 控制彩色输出。常见值有 `auto`、`always`、`never`           | `pacman -Ss linux --color=always`                 |
-| `--noprogressbar`         | 下载时不显示进度条。比较适合脚本、日志、CI 环境             | `sudo pacman -Syu --noprogressbar`                |
-| `--print-format <字符串>` | 配合 `-p` 使用，指定打印格式。常用占位符如 `%n` 包名、`%v` 版本、`%r` 仓库、`%l` 下载地址、`%s` 大小 | `pacman -Sp firefox --print-format '%r/%n %v %l'` |
-| `--debug`                 | 输出调试信息，一般用于排查 pacman 问题          | `sudo pacman -Syu --debug 2> pacman-debug.log`    |
-
-##### 行为确认
-
-| 选项          | 作用                                                         | 例子                               |
-| ------------- | ------------------------------------------------------------ | ---------------------------------- |
-| `--confirm`   | 总是询问确认。用于覆盖配置里的 `NoConfirm` 行为              | `sudo pacman -S firefox --confirm` |
-| `--noconfirm` | 不询问确认，自动回答默认选项。脚本里常见，但日常升级不建议盲用 | `sudo pacman -Syu --noconfirm`     |
-
-##### 下载
-
-| 选项                         | 作用                                                     | 例子                                          |
-| ---------------------------- | -------------------------------------------------------- | --------------------------------------------- |
-| `--disable-download-timeout` | 禁用较严格的下载超时限制。网络很慢、镜像源响应慢时可以用 | `sudo pacman -Syu --disable-download-timeout` |
-
-##### 沙盒
-
-| 选项                           | 作用                                                         | 例子                                            |
-| ------------------------------ | ------------------------------------------------------------ | ----------------------------------------------- |
-| `--disable-sandbox`            | 禁用 pacman 的沙盒安全机制。一般在容器、特殊环境中遇到兼容性问题时才使用 | `sudo pacman -Syu --disable-sandbox`            |
-| `--disable-sandbox-filesystem` | 只禁用下载沙盒的文件系统隔离部分                             | `sudo pacman -Syu --disable-sandbox-filesystem` |
-| `--disable-sandbox-syscalls`   | 只禁用下载沙盒的系统调用限制部分                             | `sudo pacman -Syu --disable-sandbox-syscalls`   |
-
-##### 架构
-
-| 选项            | 作用                                     | 例子                             |
-| --------------- | ---------------------------------------- | -------------------------------- |
-| `--arch <架构>` | 指定目标架构，而不是使用配置文件中的架构 | `sudo pacman -Syu --arch x86_64` |
-
 ##### 忽略升级
 
 | 选项                       | 作用                                                       | 例子                                     |
@@ -315,7 +266,7 @@ pacman -Qs vim
 ##### 查看本地包安装到系统的文件
 
 ```bash
-pacman -Ql bash
+pacman -Ql vim
 ```
 
 查看本地`vim`包安装到系统里的所有文件，类似这样
@@ -374,7 +325,7 @@ pacman -Qd
 
 查看作为依赖安装的软件包
 
-> 只看包名可以使用`Qqd`
+> 只看包名可以使用`-Qqd`
 
 ##### 列出孤儿依赖包
 
@@ -409,7 +360,7 @@ pacman -Qm
 
 - Aur 安装的包
 - 自己用`pacman -U`安装的本地包
-- 曾今在仓库中但现在已经被移除的软件包
+- 曾经在仓库中但现在已经被移除的软件包
 - 第三方仓库关闭后遗留的包
 
 > 只显示包名可以用`-Qqm`
@@ -515,42 +466,6 @@ pacman -Qg gnome
 | ---------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | `-p <package>`, `--file <package>` | 从一个软件包文件中查询信息，而不是从已安装数据库中查询；常用于查看 `.pkg.tar.zst` 包文件 | `pacman -Qip ./example-1.0-1-x86_64.pkg.tar.zst`；`pacman -Qlp ./example-1.0-1-x86_64.pkg.tar.zst` |
 
-##### 路径、根目录和配置相关
-
-| 选项                           | 作用                                                         | 例子                                         |
-| ------------------------------ | ------------------------------------------------------------ | -------------------------------------------- |
-| `-b <路径>`, `--dbpath <路径>` | 指定另一个 pacman 数据库位置，而不是默认的 `/var/lib/pacman` | `pacman -Q --dbpath /mnt/var/lib/pacman`     |
-| `-r <路径>`, `--root <路径>`   | 指定另一个安装根目录，用来查询挂载在其他位置的系统           | `pacman -Qr /mnt`；`pacman -Q --root /mnt`   |
-| `--config <路径>`              | 指定另一个配置文件，而不是默认的 `/etc/pacman.conf`          | `pacman -Q --config /mnt/etc/pacman.conf`    |
-| `--gpgdir <路径>`              | 指定另一个 `GnuPG` 主目录，用于软件包签名相关数据            | `pacman -Q --gpgdir /etc/pacman.d/gnupg`     |
-| `--hookdir <目录>`             | 指定另一个钩子目录；对 `-Q` 查询操作通常很少用到             | `pacman -Q --hookdir /etc/pacman.d/hooks`    |
-| `--logfile <路径>`             | 指定另一个日志文件路径；对查询操作通常只是改变 pacman 使用的日志位置 | `pacman -Q --logfile /var/log/pacman.log`    |
-| `--cachedir <目录>`            | 指定另一个软件包缓存目录；对普通 `-Q` 查询通常影响不大，更多用于涉及包文件或其他操作时统一配置 | `pacman -Q --cachedir /var/cache/pacman/pkg` |
-| `--sysroot <路径>`             | 在一个已经挂载的 guest 系统里操作，仅限 `root` 使用；适合维护挂载到 `/mnt` 的系统 | `sudo pacman -Q --sysroot /mnt`              |
-
-##### 架构相关
-
-| 选项            | 作用                                                         | 例子                                                         |
-| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `--arch <架构>` | 指定另一个架构，而不是使用当前系统架构；一般用于特殊环境或维护其他系统 | `pacman -Q --arch x86_64`；`pacman -Q --arch aarch64 --root /mnt` |
-
-##### 确认行为
-
-| 选项          | 作用                                                         | 例子                    |
-| ------------- | ------------------------------------------------------------ | ----------------------- |
-| `--confirm`   | 总是询问确认；对普通查询操作通常不会明显改变行为             | `pacman -Q --confirm`   |
-| `--noconfirm` | 不询问确认；对普通查询操作通常不会明显改变行为，但在脚本中可能会用到 | `pacman -Q --noconfirm` |
-
-##### 调试、下载超时与沙盒
-
-| 选项                           | 作用                                                         | 例子                                     |
-| ------------------------------ | ------------------------------------------------------------ | ---------------------------------------- |
-| `--debug`                      | 显示调试信息，输出会非常多，主要用于排查 pacman 本身或配置问题 | `pacman -Q --debug pacman`               |
-| `--disable-download-timeout`   | 下载时使用更宽松的超时设置；普通 `-Q` 查询一般不会下载，所以通常用不到 | `pacman -Q --disable-download-timeout`   |
-| `--disable-sandbox`            | 禁用下载进程的所有沙盒功能；**会降低安全隔离，一般不建议使用**，普通 `-Q` 查询通常用不到 | `pacman -Q --disable-sandbox`            |
-| `--disable-sandbox-filesystem` | 禁用下载进程沙盒的文件系统隔离部分；**会降低安全性**，普通 `-Q` 查询通常用不到 | `pacman -Q --disable-sandbox-filesystem` |
-| `--disable-sandbox-syscalls`   | 禁用下载进程沙盒的系统调用隔离部分；**会降低安全性**，普通 `-Q` 查询通常用不到 | `pacman -Q --disable-sandbox-syscalls`   |
-
 ### `-R` / `--remove`
 
 这个操作一般用来卸载已安装的软件包
@@ -605,7 +520,7 @@ sudo pacman -Rdd proken-pkg
 
 删除`proken-pkg`时跳过所有依赖检查，通常用于修复系统
 
-> 注意：`-c`、`-dd`、`--dbonly`、`-noscriptlet`都是比较危险的选项，不应该随便使用
+> 注意：`-c`、`-dd`、`--dbonly`、`--noscriptlet`都是比较危险的选项，不应该随便使用
 
 #### 选项解释
 
@@ -634,54 +549,6 @@ sudo pacman -Rdd proken-pkg
 | `-v`, `--verbose`         | 显示更详细的信息，适合排查卸载过程中的问题                   | `sudo pacman -Rv firefox`                                    |
 | `--color <when>`          | 控制彩色输出，`<when>` 常见值有 `auto`、`always`、`never`    | `sudo pacman -R firefox --color auto`；`sudo pacman -R firefox --color never` |
 | `--noprogressbar`         | 下载文件时不显示进度条；对普通 `-R` 卸载通常没什么影响，因为卸载一般不需要下载 | `sudo pacman -R firefox --noprogressbar`                     |
-
-##### 行为确认
-
-| 选项          | 作用                                                         | 例子                                 |
-| ------------- | ------------------------------------------------------------ | ------------------------------------ |
-| `--confirm`   | 总是询问确认，即使配置或环境里可能默认不询问，也会要求你确认 | `sudo pacman -R firefox --confirm`   |
-| `--noconfirm` | 不询问确认，直接按默认选择执行。**删除操作中使用有风险，脚本里也建议先用 `--print` 预览** | `sudo pacman -R firefox --noconfirm` |
-
-##### 数据库、根目录和配置文件相关
-
-| 选项                           | 作用                                                         | 例子                                                         |
-| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `-b <路径>`, `--dbpath <路径>` | 指定另一个 `pacman` 数据库位置，而不是默认的 `/var/lib/pacman` | `sudo pacman -R package-name --dbpath /mnt/var/lib/pacman`   |
-| `-r <路径>`, `--root <路径>`   | 指定另一个安装根目录，常用于维护挂载到 `/mnt` 的系统         | `sudo pacman -R package-name --root /mnt`                    |
-| `--config <路径>`              | 指定另一个配置文件，而不是默认的 `/etc/pacman.conf`          | `sudo pacman -R package-name --config /mnt/etc/pacman.conf`  |
-| `--cachedir <目录>`            | 指定另一个软件包缓存目录；对普通卸载影响不大，但可用于统一指定操作环境 | `sudo pacman -R package-name --cachedir /mnt/var/cache/pacman/pkg` |
-| `--gpgdir <路径>`              | 指定另一个 `GnuPG` 主目录，用于软件包签名相关数据            | `sudo pacman -R package-name --gpgdir /etc/pacman.d/gnupg`   |
-| `--hookdir <目录>`             | 指定另一个钩子目录，卸载时会影响执行哪些 `pacman` hooks      | `sudo pacman -R package-name --hookdir /etc/pacman.d/hooks`  |
-| `--logfile <路径>`             | 指定另一个日志文件，而不是默认的 `/var/log/pacman.log`       | `sudo pacman -R package-name --logfile /tmp/pacman-remove.log` |
-| `--sysroot <路径>`             | 在一个已经挂载的 guest 系统中操作，仅限 `root` 使用；适合从当前系统维护另一个安装在 `/mnt` 的系统 | `sudo pacman -R package-name --sysroot /mnt`                 |
-
-##### 数据库控制
-
-| 选项       | 作用                                                         | 例子                                   |
-| ---------- | ------------------------------------------------------------ | -------------------------------------- |
-| `--dbonly` | 只修改 `pacman` 数据库记录，不删除实际软件包文件。**非常危险，容易造成数据库和文件系统不一致，通常只用于手动修复数据库状态** | `sudo pacman -R package-name --dbonly` |
-
-##### 脚本控制
-
-| 选项            | 作用                                                         | 例子                                        |
-| --------------- | ------------------------------------------------------------ | ------------------------------------------- |
-| `--noscriptlet` | 不执行软件包卸载脚本。**可能导致用户、服务、缓存、系统状态没有被正确清理，日常卸载不建议使用** | `sudo pacman -R package-name --noscriptlet` |
-
-##### 架构
-
-| 选项            | 作用                                                         | 例子                                                         |
-| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `--arch <架构>` | 指定另一个架构，而不是使用当前系统架构；通常用于特殊维护环境或交叉架构场景 | `sudo pacman -R package-name --arch x86_64`；`sudo pacman -R package-name --arch aarch64 --root /mnt` |
-
-##### 调试、下载超时与沙盒
-
-| 选项                           | 作用                                                         | 例子                                                  |
-| ------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------- |
-| `--debug`                      | 显示调试信息，输出会非常多，主要用于排查 `pacman` 行为或配置问题 | `sudo pacman -R firefox --debug`                      |
-| `--disable-download-timeout`   | 下载时使用更宽松的超时设置；普通 `-R` 卸载一般不下载文件，所以通常用不到 | `sudo pacman -R firefox --disable-download-timeout`   |
-| `--disable-sandbox`            | 禁用下载进程的所有沙盒功能；**会降低安全隔离，普通卸载通常也不需要它** | `sudo pacman -R firefox --disable-sandbox`            |
-| `--disable-sandbox-filesystem` | 禁用下载进程沙盒的文件系统隔离部分；**会降低安全性，普通卸载通常用不到** | `sudo pacman -R firefox --disable-sandbox-filesystem` |
-| `--disable-sandbox-syscalls`   | 禁用下载进程沙盒的系统调用隔离部分；**会降低安全性，普通卸载通常用不到** | `sudo pacman -R firefox --disable-sandbox-syscalls`   |
 
 ### `-U` / `--upgrade`
 
@@ -740,59 +607,6 @@ sudo pacman -U https://example.com/packages/niri-26.04-1-x86_64.pkg.tar.zst
 | `--noscriptlet`                    | 不执行软件包自带的安装脚本，比如安装后钩子、用户创建、缓存刷新等可能不会执行。**可能导致软件包配置不完整** | `sudo pacman -U --noscriptlet ./example-1.0-1-x86_64.pkg.tar.zst` |
 | `--overwrite <glob>`               | 允许覆盖与其他软件包冲突的文件，`<glob>`可以指定文件匹配模式，可多次使用。**风险很高**，可能覆盖其他包拥有的文件 | `sudo pacman -U ./example-1.0-1-x86_64.pkg.tar.zst --overwrite '/usr/bin/example'`；`sudo pacman -U ./example.pkg.tar.zst --overwrite '*'` |
 
-##### 忽略升级相关
-
-| 选项                       | 作用                                                         | 例子                                                         |
-| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `--ignore <软件包>`        | 升级时忽略指定软件包，可多次使用。对于`-U`来说，主要用于处理目标包或依赖判断中的忽略规则 | `sudo pacman -U ./foo-1.0-1-x86_64.pkg.tar.zst --ignore bar` |
-| `--ignoregroup <软件包组>` | 升级时忽略指定软件包组，可多次使用                           | `sudo pacman -U ./foo-1.0-1-x86_64.pkg.tar.zst --ignoregroup gnome` |
-
-##### 输出、预览与调试
-
-| 选项                      | 作用                                                         | 例子                                                         |
-| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `-p`, `--print`           | 只打印目标，不真正执行安装或升级，适合预览操作               | `pacman -Up ./example-1.0-1-x86_64.pkg.tar.zst`              |
-| `--print-format <字符串>` | 配合`--print`使用，自定义打印目标时的输出格式                | `pacman -Up ./example-1.0-1-x86_64.pkg.tar.zst --print-format '%n %v'` |
-| `-v`, `--verbose`         | 显示更详细的信息，例如路径、版本、数据库等信息，排查问题时很有用 | `sudo pacman -Uv ./example-1.0-1-x86_64.pkg.tar.zst`         |
-| `--debug`                 | 显示调试信息，输出会非常多，主要用于排查`pacman`内部行为或提交问题报告 | `sudo pacman -U --debug ./example-1.0-1-x86_64.pkg.tar.zst`  |
-| `--color <when>`          | 控制输出是否使用颜色，`<when>`常见值有`auto`、`always`、`never` | `sudo pacman -U ./example-1.0-1-x86_64.pkg.tar.zst --color always` |
-| `--noprogressbar`         | 下载文件时不显示进度条，适合脚本或日志环境                   | `sudo pacman -U --noprogressbar https://example.com/packages/example-1.0-1-x86_64.pkg.tar.zst` |
-
-##### 行为确认
-
-| 选项          | 作用                                                         | 例子                                                         |
-| ------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `--confirm`   | 总是询问确认，即使配置或环境里可能默认不询问，也强制弹出确认提示 | `sudo pacman -U --confirm ./example-1.0-1-x86_64.pkg.tar.zst` |
-| `--noconfirm` | 不询问确认，自动使用默认回答。适合脚本，但**有风险**，可能在没看清操作内容时直接安装或覆盖 | `sudo pacman -U --noconfirm ./example-1.0-1-x86_64.pkg.tar.zst` |
-
-##### 路径、根目录与配置文件相关
-
-| 选项                    | 作用                                                         | 例子                                                         |
-| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `-b`, `--dbpath <路径>` | 指定另一个软件包数据库位置，而不是默认的`/var/lib/pacman`。一般用于救援、测试或特殊系统环境 | `sudo pacman -U ./example.pkg.tar.zst --dbpath /mnt/var/lib/pacman` |
-| `-r`, `--root <路径>`   | 指定另一个安装根目录，把软件包安装到该根目录对应的系统中。常见于修复挂载在`/mnt`的系统 | `sudo pacman -U ./example.pkg.tar.zst --root /mnt`           |
-| `--sysroot`             | 在一个已经挂载好的`guest`系统中操作，仅`root`可用。适合容器、离线系统或救援场景 | `sudo pacman -U ./example.pkg.tar.zst --sysroot /mnt`        |
-| `--config <路径>`       | 指定另一个`pacman`配置文件，而不是默认的`/etc/pacman.conf`   | `sudo pacman -U ./example.pkg.tar.zst --config /tmp/pacman.conf` |
-| `--cachedir <目录>`     | 指定另一个软件包缓存目录，而不是默认的`/var/cache/pacman/pkg` | `sudo pacman -U ./example.pkg.tar.zst --cachedir /mnt/var/cache/pacman/pkg` |
-| `--gpgdir <路径>`       | 指定另一个`GnuPG`主目录，用于软件包签名验证相关操作          | `sudo pacman -U ./example.pkg.tar.zst --gpgdir /etc/pacman.d/gnupg` |
-| `--hookdir <目录>`      | 指定另一个钩子目录，用于加载`pacman`事务钩子                 | `sudo pacman -U ./example.pkg.tar.zst --hookdir /etc/pacman.d/hooks` |
-| `--logfile <路径>`      | 指定另一个日志文件，而不是默认的`/var/log/pacman.log`        | `sudo pacman -U ./example.pkg.tar.zst --logfile /tmp/pacman.log` |
-
-##### 下载与沙盒相关
-
-| 选项                           | 作用                                                         | 例子                                                         |
-| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `--disable-download-timeout`   | 下载时使用更宽松的超时策略，网络慢或远程服务器响应慢时可能有用 | `sudo pacman -U https://example.com/packages/example.pkg.tar.zst --disable-download-timeout` |
-| `--disable-sandbox`            | 禁用下载进程的所有沙盒功能。**会降低安全隔离**，一般不建议使用，除非沙盒导致下载异常 | `sudo pacman -U https://example.com/packages/example.pkg.tar.zst --disable-sandbox` |
-| `--disable-sandbox-filesystem` | 只禁用下载进程沙盒的文件系统隔离部分。**会降低安全性**，用于排查沙盒文件访问问题 | `sudo pacman -U https://example.com/packages/example.pkg.tar.zst --disable-sandbox-filesystem` |
-| `--disable-sandbox-syscalls`   | 只禁用下载进程沙盒的系统调用隔离部分。**会降低安全性**，用于排查沙盒系统调用限制问题 | `sudo pacman -U https://example.com/packages/example.pkg.tar.zst --disable-sandbox-syscalls` |
-
-##### 架构相关
-
-| 选项            | 作用                                                         | 例子                                                         |
-| --------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `--arch <架构>` | 指定另一个架构，而不是使用当前系统架构。一般用于特殊构建、交叉环境或维护其他架构的系统 | `sudo pacman -U ./example-1.0-1-x86_64.pkg.tar.zst --arch x86_64` |
-
 ### `-D` / `--database`
 
 `-D`一般用于直接操作`pacman`的本地数据库，最常见的用法是更改软件包的安装原因
@@ -842,50 +656,6 @@ pacman -Dk
 | `--asdeps`     | 把指定软件包标记为“非明确指定安装”，也就是作为依赖安装。**如果乱标记，之后可能被当成孤儿包清理掉** | `sudo pacman -D --asdeps firefox`     |
 | `--asexplicit` | 把指定软件包标记为“明确指定安装”，也就是用户手动安装。常用于防止重要软件被识别为孤儿包 | `sudo pacman -D --asexplicit firefox` |
 
-##### 输出与调试
-
-| 选项              | 作用                                                         | 例子                               |
-| ----------------- | ------------------------------------------------------------ | ---------------------------------- |
-| `-q`, `--quiet`   | 不显示成功消息的输出，让结果更安静，比较适合在脚本中使用     | `sudo pacman -Dq --asdeps firefox` |
-| `-v`, `--verbose` | 显示更详细的信息，排查数据库问题时比较有用                   | `pacman -Dkv`                      |
-| `--color <when>`  | 控制输出是否彩色化，`<when>`常见值有`auto`、`always`、`never` | `pacman -Dk --color always`        |
-| `--debug`         | 显示调试信息，输出会非常多，一般只在排查`pacman`问题时使用   | `pacman -Dk --debug`               |
-
-##### 路径、根目录与配置文件相关
-
-| 选项                    | 作用                                                         | 例子                                                         |
-| ----------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `-b`, `--dbpath <路径>` | 指定另一个数据库位置，而不是默认的`/var/lib/pacman`。常用于修复、测试或维护其他系统 | `sudo pacman -D --asexplicit firefox --dbpath /mnt/var/lib/pacman` |
-| `-r`, `--root <路径>`   | 指定另一个安装根目录，让`pacman`以该目录作为系统根目录来操作 | `sudo pacman -D --asexplicit firefox --root /mnt`            |
-| `--sysroot <路径>`      | 在一个已经挂载好的`guest`系统中操作，仅`root`可用，适合维护离线系统或其他根目录里的系统 | `sudo pacman -D --asexplicit firefox --sysroot /mnt`         |
-| `--config <路径>`       | 指定另一个`pacman`配置文件，而不是默认的`/etc/pacman.conf`   | `sudo pacman -D --asdeps firefox --config /tmp/pacman.conf`  |
-| `--cachedir <目录>`     | 指定另一个软件包缓存目录。对`-D`这种数据库操作通常不常用，但在特殊维护环境中可能会一起指定 | `sudo pacman -Dk --cachedir /mnt/var/cache/pacman/pkg`       |
-| `--gpgdir <路径>`       | 指定另一个`GnuPG`主目录，用于签名验证相关操作                | `sudo pacman -Dk --gpgdir /etc/pacman.d/gnupg`               |
-| `--hookdir <目录>`      | 指定另一个钩子目录。对普通`-D`操作通常不常用，更多用于特殊系统维护场景 | `sudo pacman -Dk --hookdir /etc/pacman.d/hooks`              |
-| `--logfile <路径>`      | 指定另一个日志文件，而不是默认的`/var/log/pacman.log`        | `sudo pacman -D --asexplicit firefox --logfile /tmp/pacman.log` |
-
-##### 确认行为
-
-| 选项          | 作用                                                         | 例子                                          |
-| ------------- | ------------------------------------------------------------ | --------------------------------------------- |
-| `--confirm`   | 总是询问确认。对很多`-D`操作影响不大，但可以强制保留交互确认行为 | `sudo pacman -D --asdeps firefox --confirm`   |
-| `--noconfirm` | 不询问确认，自动采用默认回答。**用于脚本时方便，但操作数据库前要确认命令无误** | `sudo pacman -D --asdeps firefox --noconfirm` |
-
-##### 下载与沙盒相关
-
-| 选项                           | 作用                                                         | 例子                                       |
-| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------ |
-| `--disable-download-timeout`   | 下载时使用更宽松的超时设置。`-D`一般不需要下载内容，但在涉及同步数据库检查等场景中可能有用 | `pacman -Dkk --disable-download-timeout`   |
-| `--disable-sandbox`            | 禁用下载进程的所有沙盒功能。**会降低安全隔离**，一般只在沙盒导致异常时临时使用 | `pacman -Dkk --disable-sandbox`            |
-| `--disable-sandbox-filesystem` | 禁用下载进程沙盒的文件系统隔离部分。**会降低安全性**，适合排查文件系统沙盒相关问题 | `pacman -Dkk --disable-sandbox-filesystem` |
-| `--disable-sandbox-syscalls`   | 禁用下载进程沙盒的系统调用隔离部分。**会降低安全性**，适合排查系统调用限制导致的问题 | `pacman -Dkk --disable-sandbox-syscalls`   |
-
-##### 架构相关
-
-| 选项            | 作用                                                         | 例子                            |
-| --------------- | ------------------------------------------------------------ | ------------------------------- |
-| `--arch <架构>` | 指定另一个架构，而不是当前系统架构。常用于维护其他架构的系统或特殊构建环境 | `sudo pacman -Dk --arch x86_64` |
-
 ### `-T` / `--deptest`
 
 `-T`一般用于检查指定的依赖是否已经满足
@@ -932,49 +702,142 @@ sudo pacman -T bash glibc --root /mnt
 | ----------------- | ------------------------------------------------------ | --------------------------- |
 | `-v`, `--verbose` | 显示更详细的信息，适合排查为什么某个依赖判断不符合预期 | `pacman -Tv 'python>=3.11'` |
 
-##### 路径、根目录与配置文件相关
+## 通用选项
+
+以下选项是所有操作（`-S`、`-Q`、`-R`、`-U`、`-D`、`-T`）共有的，因此单独列出
+
+### 路径、根目录与配置文件
 
 | 选项                    | 作用                                                         | 例子                                                  |
 | ----------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
-| `-b`, `--dbpath <路径>` | 指定另一个`pacman`数据库位置，而不是默认的`/var/lib/pacman`。常用于检查其他系统或特殊环境里的依赖状态 | `pacman -T bash --dbpath /mnt/var/lib/pacman`         |
-| `-r`, `--root <路径>`   | 指定另一个安装根目录，让`pacman`以该路径作为系统根目录进行依赖检查 | `sudo pacman -T bash glibc --root /mnt`               |
-| `--sysroot <路径>`      | 在一个已经挂载好的`guest`系统中操作，仅`root`可用，适合检查离线系统或其他根目录里的依赖 | `sudo pacman -T bash --sysroot /mnt`                  |
-| `--config <路径>`       | 指定另一个`pacman`配置文件，而不是默认的`/etc/pacman.conf`   | `pacman -T bash --config /tmp/pacman.conf`            |
-| `--cachedir <目录>`     | 指定另一个软件包缓存目录。对`-T`依赖测试来说通常不常用，但在自定义维护环境里可以一起指定 | `pacman -T bash --cachedir /mnt/var/cache/pacman/pkg` |
-| `--gpgdir <路径>`       | 指定另一个`GnuPG`主目录，用于签名验证相关配置。`-T`一般不会直接用到签名验证，但属于通用选项 | `pacman -T bash --gpgdir /etc/pacman.d/gnupg`         |
-| `--hookdir <目录>`      | 指定另一个钩子目录。`-T`不会执行安装/删除钩子，普通依赖检查一般用不到 | `pacman -T bash --hookdir /etc/pacman.d/hooks`        |
-| `--logfile <路径>`      | 指定另一个日志文件，而不是默认的`/var/log/pacman.log`        | `pacman -T bash --logfile /tmp/pacman.log`            |
+| `-r`, `--root <路径>`   | 指定另一个安装根目录，让 pacman 以该路径作为系统根目录操作   | `sudo pacman -Syu --root /mnt`                        |
+| `-b`, `--dbpath <路径>` | 指定 pacman 数据库位置，默认 `/var/lib/pacman`               | `sudo pacman -Syu --dbpath /mnt/var/lib/pacman`       |
+| `--config <路径>`       | 使用指定的 pacman 配置文件，默认 `/etc/pacman.conf`          | `sudo pacman -Syu --config /tmp/pacman.conf`          |
+| `--gpgdir <路径>`       | 指定 GnuPG 密钥目录，默认 `/etc/pacman.d/gnupg`             | `sudo pacman -Syu --gpgdir /etc/pacman.d/gnupg`       |
+| `--hookdir <目录>`      | 指定 pacman hook 钩子目录，可多次使用                        | `sudo pacman -Syu --hookdir /etc/pacman.d/hooks`      |
+| `--logfile <路径>`      | 指定 pacman 日志文件路径，默认 `/var/log/pacman.log`         | `sudo pacman -Syu --logfile /tmp/pacman.log`          |
+| `--cachedir <目录>`     | 指定软件包缓存目录，默认 `/var/cache/pacman/pkg`             | `sudo pacman -Syu --cachedir /mnt/cache/pacman/pkg`   |
+| `--sysroot <路径>`      | 指定替代根文件系统路径，让 pacman 将该目录视为系统根目录 `/` | `sudo pacman -Syu --sysroot /mnt`                     |
 
-##### 架构相关
+### 输出与调试
 
-| 选项            | 作用                                                         | 例子                           |
-| --------------- | ------------------------------------------------------------ | ------------------------------ |
-| `--arch <架构>` | 指定另一个架构，而不是当前系统架构。常用于检查其他架构环境中的依赖 | `pacman -T bash --arch x86_64` |
+| 选项              | 作用                                                         | 例子                                          |
+| ----------------- | ------------------------------------------------------------ | --------------------------------------------- |
+| `-v`, `--verbose` | 显示更详细的信息，例如仓库、下载、依赖解析等                 | `sudo pacman -Syu -v`                         |
+| `--color <when>`  | 控制彩色输出。常见值：`auto`、`always`、`never`              | `pacman -Ss linux --color=always`             |
+| `--noprogressbar` | 下载时不显示进度条，适合脚本、日志、CI 环境                  | `sudo pacman -Syu --noprogressbar`            |
+| `--print-format <字符串>` | 配合 `-p` 使用，指定打印格式。常用占位符：`%n` 包名、`%v` 版本、`%r` 仓库、`%l` 下载地址、`%s` 大小 | `pacman -Sp firefox --print-format '%r/%n %v'` |
+| `--debug`         | 输出调试信息，一般用于排查 pacman 问题                       | `sudo pacman -Syu --debug 2> pacman-debug.log` |
 
-##### 输出格式与调试
+### 行为确认
 
-| 选项             | 作用                                                         | 例子                            |
-| ---------------- | ------------------------------------------------------------ | ------------------------------- |
-| `--color <when>` | 控制输出是否彩色化，`<when>`常见值有`auto`、`always`、`never` | `pacman -T bash --color always` |
-| `--debug`        | 显示调试信息，输出会很多，主要用于排查`pacman`自身或依赖判断问题 | `pacman -T bash --debug`        |
+| 选项          | 作用                                                         | 例子                               |
+| ------------- | ------------------------------------------------------------ | ---------------------------------- |
+| `--confirm`   | 总是询问确认，用于覆盖配置里的 `NoConfirm` 行为              | `sudo pacman -S firefox --confirm` |
+| `--noconfirm` | 不询问确认，自动回答默认选项。脚本里常见，但日常操作不建议盲用 | `sudo pacman -Syu --noconfirm`     |
 
-##### 行为确认
+### 下载与沙盒
 
-| 选项          | 作用                                                         | 例子                         |
-| ------------- | ------------------------------------------------------------ | ---------------------------- |
-| `--confirm`   | 总是询问确认。由于`-T`只是检查依赖，通常不会触发确认，但它仍是可用的通用选项 | `pacman -T bash --confirm`   |
-| `--noconfirm` | 不询问确认，自动采用默认回答。对`-T`来说通常影响不大，适合脚本中统一传参 | `pacman -T bash --noconfirm` |
+| 选项                           | 作用                                                         | 例子                                            |
+| ------------------------------ | ------------------------------------------------------------ | ----------------------------------------------- |
+| `--disable-download-timeout`   | 禁用较严格的下载超时限制。网络慢或镜像源响应慢时可以用       | `sudo pacman -Syu --disable-download-timeout`   |
+| `--disable-sandbox`            | 禁用 pacman 的沙盒安全机制。一般在容器、特殊环境中遇到兼容性问题时才使用 | `sudo pacman -Syu --disable-sandbox`            |
+| `--disable-sandbox-filesystem` | 只禁用下载沙盒的文件系统隔离部分                             | `sudo pacman -Syu --disable-sandbox-filesystem` |
+| `--disable-sandbox-syscalls`   | 只禁用下载沙盒的系统调用限制部分                             | `sudo pacman -Syu --disable-sandbox-syscalls`   |
 
-##### 下载与超时
+### 架构
 
-| 选项                         | 作用                                                         | 例子                                        |
-| ---------------------------- | ------------------------------------------------------------ | ------------------------------------------- |
-| `--disable-download-timeout` | 下载时使用更宽松的超时设置。`-T`一般不会下载软件包，但在特殊配置或脚本统一参数时可以使用 | `pacman -T bash --disable-download-timeout` |
+| 选项            | 作用                                       | 例子                             |
+| --------------- | ------------------------------------------ | -------------------------------- |
+| `--arch <架构>` | 指定目标架构，而不是使用配置文件中的架构   | `sudo pacman -Syu --arch x86_64` |
 
-##### 沙盒相关
+## 实际使用场景
 
-| 选项                           | 作用                                                         | 例子                                          |
-| ------------------------------ | ------------------------------------------------------------ | --------------------------------------------- |
-| `--disable-sandbox`            | 禁用下载进程的所有沙盒功能。**会降低安全隔离**，一般只在沙盒导致异常时临时使用；`-T`通常不需要它 | `pacman -T bash --disable-sandbox`            |
-| `--disable-sandbox-filesystem` | 禁用下载进程沙盒的文件系统隔离部分。**会降低安全性**，只建议排查相关问题时使用 | `pacman -T bash --disable-sandbox-filesystem` |
-| `--disable-sandbox-syscalls`   | 禁用下载进程沙盒的系统调用隔离部分。**会降低安全性**，只建议排查相关问题时使用 | `pacman -T bash --disable-sandbox-syscalls`   |
+### 系统急救：chroot 修复
+
+当系统无法正常启动时，可以从 Live USB 启动，挂载分区后用 pacman 修复：
+
+```bash
+# 挂载根分区
+mount /dev/sda2 /mnt
+
+# chroot 进入系统
+arch-chroot /mnt
+
+# 用 pacman 重新安装出问题的包
+pacman -S linux linux-headers
+
+# 或者回滚某个包到缓存中的旧版本
+pacman -U /var/cache/pacman/pkg/linux-6.x.x-1-x86_64.pkg.tar.zst
+```
+
+### 查找某个命令属于哪个包
+
+```bash
+# 查找 /usr/bin/vim 属于哪个包
+pacman -Qo /usr/bin/vim
+
+# 查找一个尚未安装的文件属于哪个包（需要安装 pkgfile）
+pkgfile vim
+```
+
+### 批量安装软件
+
+```bash
+# 从文件读取包名批量安装
+pacman -S --needed - < pkglist.txt
+
+# 或一行命令
+pacman -S --needed firefox neovim docker git base-devel
+```
+
+### 清理系统垃圾
+
+```bash
+# 查看哪些包是孤儿包（无被依赖）
+pacman -Qdt
+
+# 删除孤儿包
+sudo pacman -Rns $(pacman -Qdtq)
+
+# 清理旧版本缓存，只保留当前安装版本
+sudo pacman -Sc
+
+# 彻底清空缓存（不推荐，除非空间紧张）
+sudo pacman -Scc
+```
+
+### 处理密钥过期问题
+
+```bash
+# 初始化 pacman 密钥
+sudo pacman-key --init
+
+# 从 Arch Linux 密钥服务器获取密钥
+sudo pacman-key --populate archlinux
+
+# 手动刷新密钥
+sudo pacman-key --refresh-keys
+```
+
+### 解决文件冲突
+
+```bash
+# 遇到 "exists in filesystem" 错误时
+# 先查看是哪个包拥有这个文件
+pacman -Qo /path/to/conflict/file
+
+# 然后强制覆盖安装
+sudo pacman -S 包名 --overwrite /path/to/conflict/file
+```
+
+### 使用 pacman 搜索未安装的包
+
+```bash
+# 搜索仓库中包含关键词的包
+pacman -Ss "keyword"
+
+# 只搜索包名，不搜索描述
+pacman -Ss --regex "^keyword"
+```
+
